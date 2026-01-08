@@ -132,13 +132,17 @@ async def handle_message(update: Update, context: CallbackContext):
     await update.message.reply_text(msg)
 
 def main():
-    if not TELEGRAM_TOKEN:
-        print("❌ Ошибка: TELEGRAM_TOKEN не установлен в переменных окружения!")
-        returnapp = Application.builder().token(TELEGRAM_TOKEN).build()
+    token = os.getenv("TELEGRAM_TOKEN")
+    if not token:
+        print("❌ TELEGRAM_TOKEN не установлен!")
+        return
+
+    app = Application.builder().token(token).build()
+
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
     print("Bot is running...")
     app.run_polling()
-
 if __name__ == "__main__":
     main()
